@@ -3,12 +3,15 @@ require_once dirname(__DIR__, 1) . '/database.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
+    case 'OPTIONS':
+        http_response_code(200);
+        break;
     case 'GET':
         try {
             $sql = 'SELECT 
@@ -129,6 +132,50 @@ switch ($method) {
                 ]);
             } else {
                 throw new Exception("Gagal menghapus pegawai: " . $stmt->error);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                'code' => '500',
+                'status' => 'error',
+                'message' => 'Terjadi kegagalan pada server: ' . $e->getMessage()
+            ]);
+        }
+        break;
+    case 'PUT':
+        $data = json_decode(file_get_contents("php://input"));
+
+        if (empty($data->id) || empty($data->nama) || empty($data->password)) {
+            http_response_code(400);
+            echo json_encode([
+                'code' => '400',
+                'status' => 'error',
+                'message' => 'ID, nama, dan password wajib diisi.'
+            ]);
+            exit();
+        }
+
+        try {
+            $id = $data->id;
+            $nama = htmlspecialchars(strip_tags($data->nama));
+            $password = htmlspecialchars(strip_tags($data->password));
+            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+            $sql = "UPDATE admin SET nama = ?, password = ? WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            if ($stmt === false) {
+                throw new Exception("Gagal mempersiapkan statement: " . $db->error);
+            }
+            $stmt->bind_param("ssi", $nama, $hashed_password, $id);
+            if ($stmt->execute()) {
+                http_response_code(200);
+                echo json_encode([
+                    'code' => '200',
+                    'status' => 'success',
+                    'message' => 'Data admin berhasil diperbarui.'
+                ]);
+            } else {
+                throw new Exception("Gagal memperbarui data admin: " . $stmt->error);
             }
         } catch (Exception $e) {
             http_response_code(500);

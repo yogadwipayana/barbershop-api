@@ -3,12 +3,15 @@ require_once dirname(__DIR__, 1) . '/database.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
+    case 'OPTIONS':
+        http_response_code(200);
+        break;
     case 'GET':
         try {
             $sql = 'SELECT t.id, p.nama AS namaPegawai, m.nama AS namaMember, t.tanggal, t.grandTotal FROM transaksi t INNER JOIN booking b ON t.idBooking = b.id INNER JOIN member m ON b.idMember = m.id INNER JOIN pegawai p ON t.idPegawai = p.id';

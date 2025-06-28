@@ -3,12 +3,15 @@ require_once dirname(__DIR__, 2) . '/database.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
+    case 'OPTIONS':
+        http_response_code(200);
+        break;
     case 'POST':
         $data = json_decode(file_get_contents("php://input"));
 
