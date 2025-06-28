@@ -73,7 +73,7 @@ switch ($method) {
                 echo json_encode([
                     'code' => '201',
                     'status' => 'error',
-                    'message' => 'Member berhasil didaftarkan.'
+                    'message' => 'Register berhasil, silakan login.',
                 ]);
             } else {
                 // Jika execute gagal karena alasan lain

@@ -1,6 +1,6 @@
 <?php
-    $host = "localhost";
-    $username = "root";
+    $host = "db.yogadwipayana.com";
+    $username = "barber_user";
     $password = "";
     $database = "barbershop";
     
