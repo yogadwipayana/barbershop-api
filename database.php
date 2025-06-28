@@ -1,7 +1,7 @@
 <?php
-    $host = "localhost";
-    $username = "root";
-    $password = "";
+    $host = "db.yogadwipayana.com";
+    $username = "barber_user";
+    $password = "passwordkuat";
     $database = "barbershop";
     
     $db = new mysqli($host, $username, $password, $database);
